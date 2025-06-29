@@ -1,238 +1,239 @@
+# Blender MCP - Model Context Protocol for Blender
 
-
-# BlenderMCP - Blender Model Context Protocol Integration
-
-BlenderMCP connects Blender to Claude AI through the Model Context Protocol (MCP), allowing Claude to directly interact with and control Blender. This integration enables prompt assisted 3D modeling, scene creation, and manipulation.
-
-[Full tutorial](https://www.youtube.com/watch?v=lCyQ717DuzQ)
-
-### Join the Community
-
-Give feedback, get inspired, and build on top of the MCP: [Discord](https://discord.gg/z5apgR8TFU)
-
-### Supporters
-
-<div align="center" markdown="1">
-   <sup>Special thanks to:</sup>
-   <br>
-   <br>
-   <a href="https://www.warp.dev/blender-mcp">
-      <img alt="Warp sponsorship" width="400" src="https://github.com/user-attachments/assets/c21102f7-bab9-4344-a731-0cf6b341cab2">
-   </a>
-
-### [Warp, the intelligent terminal for developers](https://www.warp.dev/blender-mcp)
-[Available for MacOS, Linux, & Windows](https://www.warp.dev/blender-mcp)<br>
-
-</div>
-<hr>
-
-**Other supporters:**
-
-[CodeRabbit](https://www.coderabbit.ai/)
-
-**All supporters:**
-
-[Support this project](https://github.com/sponsors/ahujasid)
-
-## Release notes (1.2.0)
-- View screenshots for Blender viewport to better understand the scene
-- Search and download Sketchfab models
-
-
-### Previously added features:
-- Support for Poly Haven assets through their API
-- Support to generate 3D models using Hyper3D Rodin
-- For newcomers, you can go straight to Installation. For existing users, see the points below
-- Download the latest addon.py file and replace the older one, then add it to Blender
-- Delete the MCP server from Claude and add it back again, and you should be good to go!
+A comprehensive MCP (Model Context Protocol) server and client implementation for Blender 3D integration, enabling AI-assisted 3D modeling, animation, and rendering workflows.
 
 ## Features
 
-- **Two-way communication**: Connect Claude AI to Blender through a socket-based server
-- **Object manipulation**: Create, modify, and delete 3D objects in Blender
-- **Material control**: Apply and modify materials and colors
-- **Scene inspection**: Get detailed information about the current Blender scene
-- **Code execution**: Run arbitrary Python code in Blender from Claude
-
-## Components
-
-The system consists of two main components:
-
-1. **Blender Addon (`addon.py`)**: A Blender addon that creates a socket server within Blender to receive and execute commands
-2. **MCP Server (`src/blender_mcp/server.py`)**: A Python server that implements the Model Context Protocol and connects to the Blender addon
+- **FastMCP-based server** with comprehensive tool support
+- **Blender addon** with socket-based communication
+- **CLI client** for direct command execution
+- **Extensive tool library** covering objects, materials, scenes, and animation
+- **MCP resources and prompts** for guided workflows
+- **Cross-platform compatibility**
 
 ## Installation
 
-
 ### Prerequisites
 
-- Blender 3.0 or newer
-- Python 3.10 or newer
-- uv package manager: 
+- **Blender 4.0+** 
+- **Python 3.11+**
+- **uv package manager**
 
-**If you're on Mac, please install uv as**
+### Setup
+
+1. **Clone the repository:**
 ```bash
-brew install uv
+git clone <repository-url>
+cd custom-blender-mcp
 ```
-**On Windows**
+
+2. **Install Python dependencies:**
 ```bash
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex" 
-```
-and then
-```bash
-set Path=C:\Users\nntra\.local\bin;%Path%
+uv sync
 ```
 
-Otherwise installation instructions are on their website: [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
-
-**⚠️ Do not proceed before installing UV**
-
-
-### Claude for Desktop Integration
-
-[Watch the setup instruction video](https://www.youtube.com/watch?v=neoK_WMq92g) (Assuming you have already installed uv)
-
-Go to Claude > Settings > Developer > Edit Config > claude_desktop_config.json to include the following:
-
-```json
-{
-    "mcpServers": {
-        "blender": {
-            "command": "uvx",
-            "args": [
-                "blender-mcp"
-            ]
-        }
-    }
-}
-```
-
-### Cursor integration
-
-[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=blender&config=eyJjb21tYW5kIjoidXZ4IGJsZW5kZXItbWNwIn0%3D)
-
-For Mac users, go to Settings > MCP and paste the following 
-
-- To use as a global server, use "add new global MCP server" button and paste
-- To use as a project specific server, create `.cursor/mcp.json` in the root of the project and paste
-
-
-```json
-{
-    "mcpServers": {
-        "blender": {
-            "command": "uvx",
-            "args": [
-                "blender-mcp"
-            ]
-        }
-    }
-}
-```
-
-For Windows users, go to Settings > MCP > Add Server, add a new server with the following settings:
-
-```json
-{
-    "mcpServers": {
-        "blender": {
-            "command": "cmd",
-            "args": [
-                "/c",
-                "uvx",
-                "blender-mcp"
-            ]
-        }
-    }
-}
-```
-
-[Cursor setup video](https://www.youtube.com/watch?v=wgWsJshecac)
-
-**⚠️ Only run one instance of the MCP server (either on Cursor or Claude Desktop), not both**
-
-### Installing the Blender Addon
-
-1. Download the `addon.py` file from this repo
-1. Open Blender
-2. Go to Edit > Preferences > Add-ons
-3. Click "Install..." and select the `addon.py` file
-4. Enable the addon by checking the box next to "Interface: Blender MCP"
-
+3. **Install Blender addon:**
+   - Copy `blender_addon/` directory to Blender's addons folder
+   - Enable "Blender MCP Addon" in Blender preferences
+   - Start the MCP server from the sidebar panel (View3D > Sidebar > MCP)
 
 ## Usage
 
-### Starting the Connection
-![BlenderMCP in the sidebar](assets/addon-instructions.png)
+### Starting the MCP Server
 
-1. In Blender, go to the 3D View sidebar (press N if not visible)
-2. Find the "BlenderMCP" tab
-3. Turn on the Poly Haven checkbox if you want assets from their API (optional)
-4. Click "Connect to Claude"
-5. Make sure the MCP server is running in your terminal
+```bash
+# Start the FastMCP server
+uv run blender-mcp-server
+```
 
-### Using with Claude
+### Using the CLI Client
 
-Once the config file has been set on Claude, and the addon is running on Blender, you will see a hammer icon with tools for the Blender MCP.
+```bash
+# Create objects
+uv run blender-mcp-client create CUBE --x 2 --y 0 --z 1 --name "MyCube"
+uv run blender-mcp-client create SPHERE --name "MySphere"
 
-![BlenderMCP in the sidebar](assets/hammer-icon.png)
+# Move objects
+uv run blender-mcp-client move MyCube 0 0 2
 
-#### Capabilities
+# Create materials
+uv run blender-mcp-client material "RedMaterial" --r 0.8 --g 0.2 --b 0.2
 
-- Get scene and object information 
-- Create, delete and modify shapes
-- Apply or create materials for objects
-- Execute any Python code in Blender
-- Download the right models, assets and HDRIs through [Poly Haven](https://polyhaven.com/)
-- AI generated 3D models through [Hyper3D Rodin](https://hyper3d.ai/)
+# Assign materials
+uv run blender-mcp-client assign MyCube RedMaterial
 
+# Get scene information
+uv run blender-mcp-client scene
+uv run blender-mcp-client objects
 
-### Example Commands
+# Render
+uv run blender-mcp-client render "/path/to/output.png"
 
-Here are some examples of what you can ask Claude to do:
+# Get prompt templates
+uv run blender-mcp-client prompt create_basic_scene
+```
 
-- "Create a low poly scene in a dungeon, with a dragon guarding a pot of gold" [Demo](https://www.youtube.com/watch?v=DqgKuLYUv00)
-- "Create a beach vibe using HDRIs, textures, and models like rocks and vegetation from Poly Haven" [Demo](https://www.youtube.com/watch?v=I29rn92gkC4)
-- Give a reference image, and create a Blender scene out of it [Demo](https://www.youtube.com/watch?v=FDRb03XPiRo)
-- "Generate a 3D model of a garden gnome through Hyper3D"
-- "Get information about the current scene, and make a threejs sketch from it" [Demo](https://www.youtube.com/watch?v=jxbNI5L7AH8)
-- "Make this car red and metallic" 
-- "Create a sphere and place it above the cube"
-- "Make the lighting like a studio"
-- "Point the camera at the scene, and make it isometric"
+### Available Tools
 
-## Hyper3D integration
+#### Object Management
+- `create_object` - Create 3D objects (CUBE, SPHERE, CYLINDER, PLANE)
+- `delete_object` - Delete objects
+- `move_object` - Move objects
+- `scale_object` - Scale objects
+- `rotate_object` - Rotate objects
 
-Hyper3D's free trial key allows you to generate a limited number of models per day. If the daily limit is reached, you can wait for the next day's reset or obtain your own key from hyper3d.ai and fal.ai.
+#### Materials
+- `create_material` - Create basic materials
+- `assign_material` - Assign materials to objects
+- `set_material_property` - Modify material properties
+
+#### Scene Management
+- `get_scene_info` - Get scene information
+- `set_camera_position` - Position camera
+- `render_scene` - Render images
+
+### Resources
+
+- `scene/objects` - List all objects in scene
+- `scene/materials` - List available materials
+- `object/{name}` - Get object details
+
+### Prompts
+
+- `create_basic_scene` - Template for basic scene setup
+- `lighting_setup` - Lighting configuration guide
+- `material_workflow` - Material creation workflow
+
+## Architecture
+
+```
+Claude/AI ↔ MCP Client ↔ MCP Server ↔ Blender Addon ↔ Blender API
+```
+
+### Components
+
+1. **Blender Addon** (`blender_addon/`)
+   - Socket server running inside Blender
+   - Direct access to Blender Python API
+   - UI panel for server control
+
+2. **MCP Server** (`src/blender_mcp/server.py`)
+   - FastMCP-based implementation
+   - Tools, resources, and prompts
+   - Communication bridge to Blender
+
+3. **MCP Client** (`src/blender_mcp/client.py`)
+   - HTTP client for MCP server
+   - CLI interface
+   - Integration support for Claude Code
+
+4. **Extended Tools** (`src/blender_mcp/tools/`)
+   - Object manipulation tools
+   - Material and texture tools  
+   - Scene and rendering tools
+   - Animation and rigging tools
+
+## Configuration
+
+### Blender Addon Settings
+- **Host**: localhost (default)
+- **Port**: 8765 (default)
+
+### MCP Server Settings
+- **Server URL**: http://localhost:8000 (default)
+- **Blender Connection**: localhost:8765
+
+## Development
+
+### Adding New Tools
+
+1. Create tool function in appropriate module under `src/blender_mcp/tools/`
+2. Add corresponding handler in `blender_addon/addon.py`
+3. Register tool in `src/blender_mcp/server.py`
+
+### Testing
+
+```bash
+# Run tests
+uv run pytest
+
+# Type checking
+uv run mypy src/
+
+# Code formatting
+uv run black src/
+uv run isort src/
+```
+
+## Integration with AI Systems
+
+### Claude Code Integration
+
+The MCP server can be used directly with Claude Code:
+
+```python
+# In Claude Code session
+from blender_mcp.client import BlenderMCPClient
+
+async with BlenderMCPClient() as client:
+    # Create objects
+    result = await client.call_tool("create_object", 
+                                  object_type="CUBE", 
+                                  location=[0, 0, 1])
+    
+    # Get scene info
+    objects = await client.get_resource("scene/objects")
+```
+
+### Ollama Integration
+
+For local AI models, use the CLI client:
+
+```bash
+# Ollama can call these commands
+ollama run llama2 "Create a red cube at position 2,0,1 in Blender"
+# -> uv run blender-mcp-client create CUBE --x 2 --z 1 --name RedCube
+# -> uv run blender-mcp-client material RedMaterial --r 0.8 --g 0.2 --b 0.2  
+# -> uv run blender-mcp-client assign RedCube RedMaterial
+```
 
 ## Troubleshooting
 
-- **Connection issues**: Make sure the Blender addon server is running, and the MCP server is configured on Claude, DO NOT run the uvx command in the terminal. Sometimes, the first command won't go through but after that it starts working.
-- **Timeout errors**: Try simplifying your requests or breaking them into smaller steps
-- **Poly Haven integration**: Claude is sometimes erratic with its behaviour
-- **Have you tried turning it off and on again?**: If you're still having connection errors, try restarting both Claude and the Blender server
+### Common Issues
 
+1. **Connection refused**
+   - Ensure Blender addon is running and server is started
+   - Check firewall settings
 
-## Technical Details
+2. **Tool not found**
+   - Verify MCP server is running
+   - Check tool name spelling
 
-### Communication Protocol
+3. **Object not found**
+   - Use `scene` command to list available objects
+   - Check object names are exact
 
-The system uses a simple JSON-based protocol over TCP sockets:
+### Debug Mode
 
-- **Commands** are sent as JSON objects with a `type` and optional `params`
-- **Responses** are JSON objects with a `status` and `result` or `message`
-
-## Limitations & Security Considerations
-
-- The `execute_blender_code` tool allows running arbitrary Python code in Blender, which can be powerful but potentially dangerous. Use with caution in production environments. ALWAYS save your work before using it.
-- Poly Haven requires downloading models, textures, and HDRI images. If you do not want to use it, please turn it off in the checkbox in Blender. 
-- Complex operations might need to be broken down into smaller steps
-
+```bash
+# Enable debug logging
+export BLENDER_MCP_DEBUG=1
+uv run blender-mcp-server
+```
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+1. Fork the repository
+2. Create feature branch
+3. Add tests for new functionality
+4. Submit pull request
 
-## Disclaimer
+## License
 
-This is a third-party integration and not made by Blender. Made by [Siddharth](https://x.com/sidahuj)
+MIT License - see LICENSE file for details.
+
+## Related Projects
+
+- [FastMCP](https://github.com/jlowin/fastmcp) - Python MCP framework
+- [Model Context Protocol](https://modelcontextprotocol.io/) - Official MCP specification
+- [Blender Python API](https://docs.blender.org/api/current/) - Blender scripting documentation
